@@ -1,0 +1,25 @@
+apiVersion: clusterops.mmlt.nl/v1alpha1
+kind: ClusterAddon
+metadata:
+  name: microk8s
+spec:
+  policy: AllowAll
+  target:
+    url: https://127.0.0.1:16443
+    caCert: ChangeMe
+    user: admin
+    password: ChangeMe
+  sources:
+   base:
+    type: git
+    url: https://github.com/mmlt/example-cluster-addons
+    branch: master
+    token: ChangeMe
+    action:
+      type: shell
+      cmd: "echo REPOROOT=$REPOROOT && echo VALUE_K8SENVIRONMENT=$VALUE_K8SENVIRONMENT && cat values.yaml"
+      values:
+        k8sEnvironment: test
+        k8sCloud: microk8s
+        k8sCluster: microk8s
+        k8sDomain: example.com

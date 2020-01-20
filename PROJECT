@@ -1,0 +1,7 @@
+domain: mmlt.nl
+repo: github.com/mmlt/operator-addons
+resources:
+- group: clusterops
+  kind: ClusterAddon
+  version: v1alpha1
+version: "2"

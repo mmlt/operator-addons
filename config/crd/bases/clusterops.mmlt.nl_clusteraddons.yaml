@@ -1,0 +1,191 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: clusteraddons.clusterops.mmlt.nl
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .spec.target.url
+    name: Target
+    type: string
+  - JSONPath: .status.synced
+    name: Synced
+    type: string
+  group: clusterops.mmlt.nl
+  names:
+    kind: ClusterAddon
+    listKind: ClusterAddonList
+    plural: clusteraddons
+    singular: clusteraddon
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: ClusterAddon is the Schema for the clusteraddons API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: ClusterAddonSpec defines the desired state of a target k8s
+            cluster.
+          properties:
+            policy:
+              description: 'Specifies what cluster addon operations are allowed. Valid
+                values are: - "AllowAll" (default): allows create, update and delete
+                of cluster add-ons; - "DenyDelete": forbids delete of cluster add-ons
+                when ClusterAddon resource is deleted; - "DenyUpdate": forbids update/delete
+                of cluster add-ons when ClusterAddon or repo changes.'
+              enum:
+              - AllowAll
+              - DenyDelete
+              - DenyUpdate
+              type: string
+            sources:
+              additionalProperties:
+                properties:
+                  action:
+                    description: Action specifies what to do when the content of the
+                      repository changes.
+                    properties:
+                      cmd:
+                        description: Cmd specifies what command to run in the shell.
+                        minLength: 2
+                        type: string
+                      type:
+                        description: 'Type is the type of action to perform when the
+                          repository has changed. Valid values are: - "shell" (default):
+                          Action shell with ''cmd'' and ''values''.'
+                        enum:
+                        - shell
+                        type: string
+                      values:
+                        additionalProperties:
+                          type: string
+                        description: Values are key-value pairs that are passed as
+                          values.yaml and environment variables to the shell.
+                        type: object
+                    required:
+                    - cmd
+                    type: object
+                  branch:
+                    description: Branch is the repo branch to get.
+                    minLength: 2
+                    type: string
+                  token:
+                    description: Token is used to authenticate with the remote server.
+                      For Type=git; - Token or ~/.ssh key should be specified (azure
+                      devops requires the token to be prefixed with 'x:')
+                    type: string
+                  type:
+                    description: 'Type is the type of repository to use as a source.
+                      Valid values are: - "git" (default): GIT repository.'
+                    enum:
+                    - git
+                    type: string
+                  url:
+                    description: URL is the URL of the repo that is available at $REPOROOT
+                      during the Action. When Token is specified the URL is expected
+                      to start with 'https://'.
+                    minLength: 2
+                    type: string
+                required:
+                - action
+                - branch
+                - url
+                type: object
+              description: Sources is the map of repositories and run actions to perform
+                on the target k8s cluster.
+              type: object
+            target:
+              description: Target is the k8s cluster that will get updated by this
+                controller.
+              properties:
+                ClientCert:
+                  description: ClientCert is the certificate (used together with ClientKey)
+                    to authenticate.
+                  format: byte
+                  type: string
+                ClientKey:
+                  description: ClientKey is the ClientCert key base64 encoded.
+                  format: byte
+                  type: string
+                caCert:
+                  description: CACert is the CA of the API Server base64 encoded.
+                  format: byte
+                  type: string
+                password:
+                  description: Password is the user password base64 encoded.
+                  type: string
+                url:
+                  description: URL is the URL of the API Server.
+                  type: string
+                user:
+                  description: User is the username (used together with password)
+                    to authenticate.
+                  type: string
+              required:
+              - caCert
+              - url
+              type: object
+          type: object
+        status:
+          description: ClusterAddonStatus defines the observed state of a clusteraddon.
+          properties:
+            conditions:
+              description: Conditions are the latest available observations of an
+                object's current state.
+              items:
+                description: ClusterAddonCondition is one of; - TargetOk - SourceOk
+                  - ActionOk - Synced
+                properties:
+                  lastTransitionTime:
+                    description: Last time the condition status has changed.
+                    format: date-time
+                    type: string
+                  message:
+                    description: Human readable message indicating details about last
+                      transition.
+                    type: string
+                  reason:
+                    description: Reason for last transition in a single word.
+                    type: string
+                  status:
+                    description: Status of the condition, one of True, False, Unknown.
+                    type: string
+                  type:
+                    description: Type of clusteraddon condition, Complete or Failed.
+                    type: string
+                type: object
+              type: array
+            synced:
+              description: Synced is true when the source/action have been applied
+                successfully.
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

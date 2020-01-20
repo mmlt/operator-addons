@@ -1,0 +1,26 @@
+# permissions to do edit clusteraddons.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusteraddon-editor-role
+rules:
+- apiGroups:
+  - clusterops.mmlt.nl
+  resources:
+  - clusteraddons
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - clusterops.mmlt.nl
+  resources:
+  - clusteraddons/status
+  verbs:
+  - get
+  - patch
+  - update
