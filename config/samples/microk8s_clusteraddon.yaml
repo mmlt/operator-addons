@@ -17,7 +17,7 @@ spec:
     token: ChangeMe
     action:
       type: shell
-      cmd: "echo REPOROOT=$REPOROOT && echo VALUE_K8SENVIRONMENT=$VALUE_K8SENVIRONMENT && cat values.yaml"
+      cmd: "echo REPODIR=$REPODIR && echo VALUE_K8SENVIRONMENT=$VALUE_K8SENVIRONMENT && cat values.yaml"
       values:
         k8sEnvironment: test
         k8sCloud: microk8s

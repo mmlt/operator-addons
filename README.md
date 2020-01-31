@@ -1,7 +1,22 @@
-# AddOn Operator
-The addon operator is responsible for making sure a set of kubernetes resources is available in a target cluster.
+# AddOns Operator
+The addons operator is responsible for making sure a set of kubernetes resources is available in a target cluster.
 
-The focus is on bootstrapping clusters (not deploying applications).
+Its main pupose is to deploy resources like policies, ingresses, RBAC role(binding)s etc. after a new cluster has been
+create.
+
+## Usage
+Create a resource of kind ClusterAddon and kubectl apply it.
+
+Do a `kubectl get clusteraddon`.
+The `Synced` column shows `True` when the operator has successfully applied the action on the target cluster.
+
+For more info do a `kubectl describe clusteraddon`.
+The conditions show if the source repo and target cluster are accessible. 
+The `ActionOK` condition shows if the last action succeeded.
+In addition an Event is recorded for every action performed.
+
+For even more detail check the log, see [README-dev](./README-dev.md)
+
 
 ## How it works
 Each environment (test, prod) gets a namespace and an operator to watch CR's in that namespace.

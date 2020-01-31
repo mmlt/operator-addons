@@ -68,10 +68,10 @@ type ClusterAddonTarget struct {
 	Password string `json:"password,omitempty"`
 	// ClientCert is the certificate (used together with ClientKey) to authenticate.
 	// +optional
-	ClientCert []byte `json:"ClientCert,omitempty"`
+	ClientCert []byte `json:"clientCert,omitempty"`
 	// ClientKey is the ClientCert key base64 encoded.
 	// +optional
-	ClientKey []byte `json:"ClientKey,omitempty"`
+	ClientKey []byte `json:"clientKey,omitempty"`
 }
 
 type ClusterAddonSource struct {
